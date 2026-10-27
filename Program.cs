@@ -24,8 +24,31 @@ namespace CodeQuest
             const string ErrorTooBig = "Error: that number is too big.";
             const string ErrorRange = "Error: the option must be between 0 and 3.";
             const string ErrorNoInput = "Error: no input received.";
+            const string ExitMsg = "Exit...";
 
             //Chapter 1
+            const string InputNameMsg = "Enter your name, wizard: ";
+            const string DailyMsg = "⌛ Day {0} -> {1}, you have meditated for {2} hours and you have obtained {3} power. Your total poder now is {4}";
+            const string LevelUpdateMsg = " ⭐ You have reached level {0}!";
+            const string CurrentTitleMsg = "You have the {0} title!";
+            const int Days = 5;
+
+            string[] Titles = new[] { 
+                "Raoden the Elantri", 
+                "Zyn the bugged", 
+                "Arka Nullpointer", 
+                "Elarion form the embers", 
+                "ITB-Wizard the Grey" 
+            };
+            string[] TitleMessges = new[] {
+                "You repeat 2nd convocatory", 
+                "You still confuse the wand with a spoon",
+                "You are a Summoner of Magical Breezes",
+                "Wow! You can summon dragons without burning down the laboratory!",
+                "You have reached the rank of Master of the Arcane!"
+            }; 
+            string inputName, title = Titles[0], titleMsg = "";
+            int hours, dailyPower, totalPower = 0, level = 1;
 
             //Chapter 2
 
@@ -37,6 +60,7 @@ namespace CodeQuest
 
             int input = -1;
             bool isValid;
+            Random rnd = new Random();
 
             do
             {
@@ -93,16 +117,74 @@ namespace CodeQuest
 
                 switch (input)
                 {
-                    case 1: break;
-                    //Chapter 1
+                    case 1:
+                        //Chapter 1
 
-                    case 2:  break;
-                    //Chapter 2
+                        Console.WriteLine(InputNameMsg);
+                        inputName = Console.ReadLine();
 
-                    case 3: break;
-                    //Chapter 3
+                        for(int day = 1; day < Days; day++)
+                        {
+                            hours = rnd.Next(25);
+                            dailyPower = rnd.Next(11);
 
-                    case 0: break; 
+                            totalPower += dailyPower;
+                            level = 1 + (totalPower / 10);
+
+                            Console.WriteLine(DailyMsg, day, inputName, hours, dailyPower, totalPower);
+
+                            if (totalPower > 10)
+                            {
+                                Console.WriteLine(LevelUpdateMsg, level);
+                            }
+                        }
+
+                        if (totalPower < 20)
+                        {
+                            title = Titles[0];
+                            titleMsg = TitleMessges[0];
+                        }
+                        else if (totalPower >= 20 && totalPower < 30)
+                        {
+                            title = Titles[1];
+                            titleMsg = TitleMessges[1];
+                        }
+                        else if (totalPower >= 30 && totalPower < 35)
+                        {
+                            title = Titles[2];
+                            titleMsg = TitleMessges[2];
+                        }
+                        else if (totalPower >= 35 && totalPower < 40)
+                        {
+                            title = Titles[3];
+                            titleMsg = TitleMessges[3];
+                        }
+                        else if (totalPower >= 40)
+                        {
+                            title = Titles[4];
+                            titleMsg = TitleMessges[4];
+                        }
+
+
+                        Console.WriteLine(titleMsg);
+                        Console.WriteLine(CurrentTitleMsg, title);
+
+                        break;
+
+                    case 2:
+                        //Chapter 2
+
+                        break;
+
+                    case 3:
+                        //Chapter 3
+
+                        break;
+
+                    case 0:
+                        //Exit
+                        Console.WriteLine(ExitMsg);
+                        break; 
                 }
             } while (!isValid || input != 0);
         }
