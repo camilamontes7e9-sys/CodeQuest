@@ -31,8 +31,10 @@ namespace CodeQuest
             const string DailyMsg = "⌛ Day {0} -> {1}, you have meditated for {2} hours and you have obtained {3} power. Your total poder now is {4}";
             const string LevelUpdateMsg = " ⭐ You have reached level {0}!";
             const string CurrentTitleMsg = "You have the {0} title!";
-            const int Days = 5;
+            const int Days = 5, TitleOnePower = 20, TitleTwoPower = 30, TitleThreePower = 35;
+             
 
+            Random rnd = new Random();
             string[] Titles = new[] { 
                 "Raoden the Elantri", 
                 "Zyn the bugged", 
@@ -47,20 +49,28 @@ namespace CodeQuest
                 "Wow! You can summon dragons without burning down the laboratory!",
                 "You have reached the rank of Master of the Arcane!"
             }; 
-            string inputName, title = Titles[0], titleMsg = "";
+            string inputName = "", title = Titles[0], titleMsg = "";
             int hours, dailyPower, totalPower = 0, level = 1;
 
             //Chapter 2
+            const string EnterDungeonMsg = "{0}, you have entered a dungeon. To pass trough you will guess the code for each of three doors.";
+            const string EnterDoorMsg = "Enter a guess number to open the {0} door, you have {1} attempts: ";
+            const string DragonFailMsg = "The dragon 🐲 had detected your presence and it kick you from the server";
+            const string DragonSuccesMsg = "THe dragon 🐲 respects you. You have unlocked the next level!";
+            const int Tries = 3;
 
+            int doors = 1, attempts = 3, inputNumDoor = 0, codeNum;
+            bool canEnter = false, isAble = false;
             //Chapter 3
 
             // Valor centinella: -1 NO és una opció vàlida.
             // El necessitem perquè el compilador no garanteix que 'option' s'assigni
             // dins del try (pot saltar una excepció abans d'arribar a l'assignació).
-
+            
+            // Initial Menu Variables
             int input = -1;
             bool isValid;
-            Random rnd = new Random();
+            
 
             do
             {
@@ -88,6 +98,110 @@ namespace CodeQuest
                     // Si arribem aquí no ha saltat cap excepció: entrada vàlida
                     isValid = true;
                     Console.WriteLine($"You chose: {input}");
+
+                    switch (input)
+                    {
+                        case 1:
+                            //Chapter 1
+
+                            Console.WriteLine(InputNameMsg);
+                            inputName = Console.ReadLine();
+
+                            for (int day = 1; day < Days; day++)
+                            {
+                                hours = rnd.Next(25);
+                                dailyPower = rnd.Next(11);
+
+                                totalPower += dailyPower;
+                                level = 1 + (totalPower / 10);
+
+                                Console.WriteLine(DailyMsg, day, inputName, hours, dailyPower, totalPower);
+
+                                if (totalPower > 10)
+                                {
+                                    Console.WriteLine(LevelUpdateMsg, level);
+                                }
+                            }
+
+                            if (totalPower < TitleOnePower)
+                            {
+                                title = Titles[0];
+                                titleMsg = TitleMessges[0];
+                            }
+                            else if (totalPower >= TitleOnePower && totalPower < TitleTwoPower)
+                            {
+                                title = Titles[1];
+                                titleMsg = TitleMessges[1];
+                            }
+                            else if (totalPower >= TitleTwoPower && totalPower < TitleThreePower)
+                            {
+                                title = Titles[2];
+                                titleMsg = TitleMessges[2];
+                            }
+                            else if (totalPower >= TitleThreePower && totalPower < 40)
+                            {
+                                title = Titles[3];
+                                titleMsg = TitleMessges[3];
+                            }
+                            else if (totalPower >= 40)
+                            {
+                                title = Titles[4];
+                                titleMsg = TitleMessges[4];
+                            }
+
+
+                            Console.WriteLine(titleMsg);
+                            Console.WriteLine(CurrentTitleMsg, title);
+
+                            break;
+
+                        case 2:
+                            //Chapter 2
+
+                            Console.WriteLine(EnterDungeonMsg, inputName);
+
+                            while (doors <= Tries && !canEnter)
+                            {
+                                isAble = false;
+                                while (attempts < Tries && !isAble)
+                                {
+                                    Console.WriteLine(EnterDoorMsg, doors, attempts);
+                                    inputNumDoor = Convert.ToInt32(Console.ReadLine());
+                                    codeNum = rnd.Next(6);
+
+                                    if (inputNumDoor == codeNum)
+                                    {
+                                        isAble = true;
+                                        Console.WriteLine(DragonSuccesMsg);
+                                    }
+                                    attempts++;
+                                }
+
+                                if(attempts == Tries)
+                                {
+                                    Console.WriteLine(DragonFailMsg);
+                                    doors++; 
+                                }
+                            }
+
+                            if (doors == Tries)
+                            {
+
+                            }
+
+                            break;
+
+                        case 3:
+                            //Chapter 3
+
+                            break;
+
+                        case 0:
+                            //Exit
+                            Console.WriteLine(ExitMsg);
+                            break;
+                    }
+
                 }
                 catch (FormatException)              // Text que no és un número: "abc", "3.5", ""
                 {
@@ -115,77 +229,7 @@ namespace CodeQuest
                 // Comprovem primer !isValid perquè, amb un error, 'option' pot
                 // valer 0 d'una volta anterior.
 
-                switch (input)
-                {
-                    case 1:
-                        //Chapter 1
-
-                        Console.WriteLine(InputNameMsg);
-                        inputName = Console.ReadLine();
-
-                        for(int day = 1; day < Days; day++)
-                        {
-                            hours = rnd.Next(25);
-                            dailyPower = rnd.Next(11);
-
-                            totalPower += dailyPower;
-                            level = 1 + (totalPower / 10);
-
-                            Console.WriteLine(DailyMsg, day, inputName, hours, dailyPower, totalPower);
-
-                            if (totalPower > 10)
-                            {
-                                Console.WriteLine(LevelUpdateMsg, level);
-                            }
-                        }
-
-                        if (totalPower < 20)
-                        {
-                            title = Titles[0];
-                            titleMsg = TitleMessges[0];
-                        }
-                        else if (totalPower >= 20 && totalPower < 30)
-                        {
-                            title = Titles[1];
-                            titleMsg = TitleMessges[1];
-                        }
-                        else if (totalPower >= 30 && totalPower < 35)
-                        {
-                            title = Titles[2];
-                            titleMsg = TitleMessges[2];
-                        }
-                        else if (totalPower >= 35 && totalPower < 40)
-                        {
-                            title = Titles[3];
-                            titleMsg = TitleMessges[3];
-                        }
-                        else if (totalPower >= 40)
-                        {
-                            title = Titles[4];
-                            titleMsg = TitleMessges[4];
-                        }
-
-
-                        Console.WriteLine(titleMsg);
-                        Console.WriteLine(CurrentTitleMsg, title);
-
-                        break;
-
-                    case 2:
-                        //Chapter 2
-
-                        break;
-
-                    case 3:
-                        //Chapter 3
-
-                        break;
-
-                    case 0:
-                        //Exit
-                        Console.WriteLine(ExitMsg);
-                        break; 
-                }
+                
             } while (!isValid || input != 0);
         }
     }
