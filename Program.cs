@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Numerics;
 using System.Text;
@@ -10,7 +10,7 @@ namespace CodeQuest
         public static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            
+
             //Menu
             const string MenuTitle = "===== MAIN MENU - CODEQUEST =====";
             const string MenuOption1 = "1. Train your wizard";
@@ -32,23 +32,23 @@ namespace CodeQuest
             const string LevelUpdateMsg = " ⭐ You have reached level {0}!";
             const string CurrentTitleMsg = "You have the {0} title!";
             const int Days = 5, TitleOnePower = 20, TitleTwoPower = 30, TitleThreePower = 35;
-             
+
 
             Random rnd = new Random();
-            string[] Titles = new[] { 
-                "Raoden the Elantri", 
-                "Zyn the bugged", 
-                "Arka Nullpointer", 
-                "Elarion form the embers", 
-                "ITB-Wizard the Grey" 
+            string[] Titles = new[] {
+                "Raoden the Elantri",
+                "Zyn the bugged",
+                "Arka Nullpointer",
+                "Elarion form the embers",
+                "ITB-Wizard the Grey"
             };
             string[] TitleMessges = new[] {
-                "You repeat 2nd convocatory", 
+                "You repeat 2nd convocatory",
                 "You still confuse the wand with a spoon",
                 "You are a Summoner of Magical Breezes",
                 "Wow! You can summon dragons without burning down the laboratory!",
                 "You have reached the rank of Master of the Arcane!"
-            }; 
+            };
             string inputName = "", title = Titles[0], titleMsg = "";
             int hours, dailyPower, totalPower = 0, level = 1;
 
@@ -56,21 +56,22 @@ namespace CodeQuest
             const string EnterDungeonMsg = "{0}, you have entered a dungeon. To pass trough you will guess the code for each of three doors.";
             const string EnterDoorMsg = "Enter a guess number to open the {0} door, you have {1} attempts: ";
             const string DragonFailMsg = "The dragon 🐲 had detected your presence and it kick you from the server";
-            const string DragonSuccesMsg = "THe dragon 🐲 respects you. You have unlocked the next level!";
-            const int Tries = 3;
+            const string DragonSuccesMsg = "The dragon 🐲 respects you. You have unlocked the next level!";
+            const string CanNotPassMsg = "You can not pass trough the dungeon, you must complete the first chapter";
+            const int Tries = 3, AuxNum = 4;
 
-            int doors = 1, attempts = 3, inputNumDoor = 0, codeNum;
-            bool canEnter = false, isAble = false;
+            int doors = 1, inputNumDoor = 0, codeNum;
+            bool canEnter = true, isAble = false;
             //Chapter 3
 
             // Valor centinella: -1 NO és una opció vàlida.
             // El necessitem perquè el compilador no garanteix que 'option' s'assigni
             // dins del try (pot saltar una excepció abans d'arribar a l'assignació).
-            
+
             // Initial Menu Variables
             int input = -1;
             bool isValid;
-            
+
 
             do
             {
@@ -156,37 +157,45 @@ namespace CodeQuest
                             break;
 
                         case 2:
+
                             //Chapter 2
-
-                            Console.WriteLine(EnterDungeonMsg, inputName);
-
-                            while (doors <= Tries && !canEnter)
+                            if(totalPower != 0)
                             {
-                                isAble = false;
-                                while (attempts < Tries && !isAble)
-                                {
-                                    Console.WriteLine(EnterDoorMsg, doors, attempts);
-                                    inputNumDoor = Convert.ToInt32(Console.ReadLine());
-                                    codeNum = rnd.Next(6);
+                                Console.WriteLine(EnterDungeonMsg, inputName);
 
-                                    if (inputNumDoor == codeNum)
+                                while (doors <= Tries || canEnter)
+                                {
+                                    isAble = false;
+                                    int attempts = 3;
+                                    while (attempts > 0 && !isAble)
                                     {
-                                        isAble = true;
-                                        Console.WriteLine(DragonSuccesMsg);
+                                        Console.WriteLine(EnterDoorMsg, doors, attempts);
+                                        inputNumDoor = Convert.ToInt32(Console.ReadLine());
+                                        codeNum = rnd.Next(6);
+
+                                        if (inputNumDoor == codeNum)
+                                        {
+                                            isAble = true;
+                                            Console.WriteLine(DragonSuccesMsg);
+                                        }
+                                        attempts--;
                                     }
-                                    attempts++;
+
+                                    if (attempts == 0)
+                                    {
+                                        canEnter = false;
+                                        Console.WriteLine(DragonFailMsg);
+                                        doors = AuxNum;
+                                        attempts--;
+                                    }
+                                    doors++;
+
                                 }
 
-                                if(attempts == Tries)
-                                {
-                                    Console.WriteLine(DragonFailMsg);
-                                    doors++; 
-                                }
                             }
-
-                            if (doors == Tries)
+                            else
                             {
-
+                                Console.WriteLine(CanNotPassMsg);
                             }
 
                             break;
@@ -229,8 +238,8 @@ namespace CodeQuest
                 // Comprovem primer !isValid perquè, amb un error, 'option' pot
                 // valer 0 d'una volta anterior.
 
-                
+
             } while (!isValid || input != 0);
         }
     }
-} 
+}
